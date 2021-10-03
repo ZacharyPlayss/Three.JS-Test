@@ -1,4 +1,7 @@
-import * as THREE from 'https://unpkg.com/three@0.127.0/build/three.module.js'
+import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r132/build/three.module.js';
+import {OrbitControls} from 'https://threejsfundamentals.org/threejs/resources/threejs/r132/examples/jsm/controls/OrbitControls.js';
+import {GLTFLoader} from 'https://threejsfundamentals.org/threejs/resources/threejs/r132/examples/jsm/loaders/GLTFLoader.js';
+
 
 //STANDARD SETUP
     const scene = new THREE.Scene(); //nieuwe 3D scene aanmaken
@@ -72,8 +75,21 @@ import * as THREE from 'https://unpkg.com/three@0.127.0/build/three.module.js'
         moon.position.z += 25;
         moon.position.y += 10;
         scene.add(moon);
-    
+     
+        //CUSTOM MODELS
+     let planeMesh
+     const loader = new GLTFLoader();
+     loader.load('airplane.glb', function (gltfModel){
+         planeMesh = gltfModel.scene.children.find((child) => child.name === "Airplane" );
+         planeMesh.scale.set(planeMesh.scale.x * 0.002, planeMesh.scale.y * 0.002, planeMesh.scale.z * 0.002);
+         planeMesh.position.y = 0;
+         planeMesh.position.z =18;
+         planeMesh.position.x =-20;
+         planeMesh.rotation.x = -0.5;
+         scene.add(planeMesh);
+      });
 //LIGHTS
+
 
     const pointlight = new THREE.PointLight(0xffffff)//pointlight = lightbulb
     pointlight.position.set(15,15,35)
@@ -83,13 +99,15 @@ import * as THREE from 'https://unpkg.com/three@0.127.0/build/three.module.js'
     scene.add(pointlight)
 
 //ORBITCONTROLS
+const controls = new OrbitControls(camera, renderer.domElement);
 function animate(){
     requestAnimationFrame(animate);
 
     torus.rotation.x += 0.001;//infinite animation's
     torus.rotation.y += 0.001;
     torus.rotation.z += 0.001;
-
+    planeMesh.position.x += 0.05;
+    controls.update();//zorgt ervoor dat orbit controls werkend zijn.
     renderer.render( scene, camera);
 }
 //SCROLL Animatie
